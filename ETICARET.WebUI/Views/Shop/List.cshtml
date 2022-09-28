@@ -1,0 +1,25 @@
+﻿@model ProductListModel
+@{
+    ViewData["Title"] = "List";
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <ul class="list-group">
+            <li class="list-group-item">Telefon</li>
+            <li class="list-group-item">Bilgisayar</li>
+            <li class="list-group-item">Elektronik</li>
+        </ul>
+    </div>
+    <div class="col-md-9">
+  
+        <div class="row">
+            @foreach (Product item in Model.Products)
+            {
+                <partial name="_products" for="@item" />
+            }
+        </div>
+    </div>
+</div>
+
+
