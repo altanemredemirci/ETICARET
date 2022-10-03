@@ -10,6 +10,8 @@ namespace ETICARET.DataAccess.Abstract
 {
     public interface IProductDal:IRepository<Product>
     {
-        List<Product> GetPopularProducts();
+        int GetCountByCategory(string category);
+        Product GetProductDetails(int id);
+        List<Product> GetProductsByCategory(string category, int page, int pageSize);
     }
 }

@@ -14,7 +14,7 @@ namespace ETICARET.WebUI.Controllers
         }
         public IActionResult Index()
         {
-            return View(new ProductListModel() { Products = _productService.GetPopularProducts() });
+            return View(new ProductListModel() { Products = _productService.GetAll() });
         }
     }
 }

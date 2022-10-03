@@ -12,6 +12,9 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IProductDal, EfCoreProductDal>();
 builder.Services.AddScoped<IProductService, ProductManager>();
+builder.Services.AddScoped<ICategoryDal, EfCoreCategoryDal>();
+builder.Services.AddScoped<ICategoryService, CategoryManager>();
+
 
 //builder.Services.AddControllersWithViews(); MVC import
 
@@ -37,6 +40,13 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}");
+
+    endpoints.MapControllerRoute
+    (
+        name: "products",
+        pattern: "products/{category?}",
+        defaults: new { controller = "Shop", action = "List" }
+    );
 });
 
 app.Run();

@@ -13,12 +13,24 @@ namespace ETICARET.WebUI.Controllers
         {
             _productService = productService;
         }
-        
-        public IActionResult List()
+
+        //products/telefon?page=2
+        [Route("products/{category?}")]
+        public IActionResult List(string category, int page=1)
         {
+            const int pageSize = 3;
+
             return View(new ProductListModel()
             {
-                Products=_productService.GetAll()
+                PageInfo = new PageInfo()
+                {
+                    TotalItems=_productService.GetCountByCategory(category),
+                    ItemsPerPage=pageSize,
+                    CurrentCategory=category,
+                    CurrentPage=page
+                },
+
+                Products=_productService.GetProductsByCategory(category, page,pageSize)
             });
         }
 
@@ -30,15 +42,17 @@ namespace ETICARET.WebUI.Controllers
             }
 
             //Product product = _productService.GetById((int)id); 
-            Product product = _productService.GetById(id.Value); 
+            Product product = _productService.GetProductDetails(id.Value);
 
-            if(product==null)
-            {
+            if (product == null)
                 return NotFound();
-            }
 
-
-            return View(product);
+            return View(new ProductDetailsModel()
+            {
+                Product = product,
+                Categories = product.ProductCategories.Select(i => i.Category).ToList()
+            });
+          
         }
     }
 }
