@@ -47,6 +47,20 @@ app.UseEndpoints(endpoints =>
         pattern: "products/{category?}",
         defaults: new { controller = "Shop", action = "List" }
     );
+
+    endpoints.MapControllerRoute
+(
+    name: "adminProducts",
+    pattern: "admin/products",
+    defaults: new { controller = "Admin", action = "ProductList" }
+);
+
+    endpoints.MapControllerRoute
+(
+name: "adminProducts",
+pattern: "admin/products/{id?}",
+defaults: new { controller = "Admin", action = "EditProduct" }
+);
 });
 
 app.Run();

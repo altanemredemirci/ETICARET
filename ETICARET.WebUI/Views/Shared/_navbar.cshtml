@@ -3,7 +3,7 @@
         <a class="navbar-brand" href="/">Shopping</a>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a href="#" class="nav-link active">Home</a>
+                <a href="/Home/Index" class="nav-link active">Home</a>
             </li>
             <li class="nav-item">
                 <!--<a href="/Shop/List" class="nav-link">Products</a>-->
@@ -16,16 +16,16 @@
                 <a href="#" class="nav-link">Orders</a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">Add Product</a>
+                <a asp-controller="Admin" asp-action="CreateProduct" class="nav-link">Add Product</a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">Admin Product</a>
+                <a href="/admin/products" class="nav-link">Admin Product</a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">Add Category</a>
+                <a asp-controller="Admin" asp-action="CreateCategory" class="nav-link">Add Category</a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">Admin Categories</a>
+                <a asp-controller="Admin" asp-action="CategoryList" class="nav-link">Admin Categories</a>
             </li>
         </ul>
         <ul class="navbar-nav mr-auto">

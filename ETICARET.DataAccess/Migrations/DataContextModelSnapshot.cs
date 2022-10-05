@@ -38,7 +38,7 @@ namespace ETICARET.DataAccess.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ETICARET.Entities.Product", b =>
+            modelBuilder.Entity("ETICARET.Entities.Image", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,6 +47,28 @@ namespace ETICARET.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Image");
+                });
+
+            modelBuilder.Entity("ETICARET.Entities.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -77,6 +99,17 @@ namespace ETICARET.DataAccess.Migrations
                     b.ToTable("ProductCategory");
                 });
 
+            modelBuilder.Entity("ETICARET.Entities.Image", b =>
+                {
+                    b.HasOne("ETICARET.Entities.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("ETICARET.Entities.ProductCategory", b =>
                 {
                     b.HasOne("ETICARET.Entities.Category", "Category")
@@ -103,6 +136,8 @@ namespace ETICARET.DataAccess.Migrations
 
             modelBuilder.Entity("ETICARET.Entities.Product", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("ProductCategories");
                 });
 #pragma warning restore 612, 618

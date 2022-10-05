@@ -39,13 +39,16 @@ namespace ETICARET.DataAccess.Concrete.EfCore
         };
         private static Product[] Products =
         {
-            new Product(){ Name="Samsung Note6", Price=15000, ImageUrl="1.jpg" ,Description="<p>güzel telefon</p>"},
-            new Product(){ Name="Samsung Note7", Price=16000, ImageUrl="2.jpg" ,Description="<p>güzel telefon</p>"},
-            new Product(){ Name="Samsung Note8", Price=17000, ImageUrl="3.jpg" ,Description="<p>güzel telefon</p>"},
-            new Product(){ Name="Samsung Note9", Price=18000, ImageUrl="4.jpg" ,Description="<p>güzel telefon</p>"},
-            new Product(){ Name="Samsung Note10", Price=19000, ImageUrl="5.jpg",Description="<p>güzel telefon</p>"},
-            new Product(){ Name="Samsung Note11", Price=20000, ImageUrl="6.jpg",Description="<p>güzel telefon</p>"},
-            new Product(){ Name="Samsung Note12", Price=28000, ImageUrl="7.jpg",Description="<p>güzel telefon</p>"}
+            new Product(){ Name="Samsung Note6", Price=15000, Images={new Image(){ImageUrl="1.jpg" },new Image(){ImageUrl="2.jpg" },new Image() { ImageUrl = "3.jpg" },new Image() { ImageUrl = "4.jpg" } },Description="<p>güzel telefon</p>"},
+
+
+
+            new Product(){ Name="Samsung Note7", Price=16000, Images={new Image(){ImageUrl="2.jpg" },new Image(){ImageUrl="3.jpg" },new Image() { ImageUrl = "4.jpg" },new Image() { ImageUrl = "5.jpg" } },Description="<p>güzel telefon</p>"},
+            new Product(){ Name="Samsung Note8", Price=17000, Images={new Image(){ImageUrl="2.jpg" },new Image(){ImageUrl="3.jpg" },new Image() { ImageUrl = "4.jpg" },new Image() { ImageUrl = "5.jpg" } },Description="<p>güzel telefon</p>"},
+            new Product(){ Name="Samsung Note9", Price=18000, Images={new Image(){ImageUrl="2.jpg" },new Image(){ImageUrl="3.jpg" },new Image() { ImageUrl = "4.jpg" },new Image() { ImageUrl = "5.jpg" } } ,Description="<p>güzel telefon</p>"},
+            new Product(){ Name="Samsung Note10", Price=19000, Images={new Image(){ImageUrl="2.jpg" },new Image(){ImageUrl="3.jpg" },new Image() { ImageUrl = "4.jpg" },new Image() { ImageUrl = "5.jpg" } },Description="<p>güzel telefon</p>"},
+            new Product(){ Name="Samsung Note11", Price=20000, Images={new Image(){ImageUrl="2.jpg" },new Image(){ImageUrl="3.jpg" },new Image() { ImageUrl = "4.jpg" },new Image() { ImageUrl = "5.jpg" } },Description="<p>güzel telefon</p>"},
+            new Product(){ Name="Samsung Note12", Price=28000, Images={new Image(){ImageUrl="2.jpg" },new Image(){ImageUrl="3.jpg" },new Image() { ImageUrl = "4.jpg" },new Image() { ImageUrl = "5.jpg" } },Description="<p>güzel telefon</p>"}
         };
 
         private static ProductCategory[] ProductCategory =

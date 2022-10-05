@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ETICARET.Entities;
 
-namespace ETICARET.Entities
+namespace ETICARET.WebUI.Models
 {
-    public class Product
+    public class ProductModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -16,7 +12,7 @@ namespace ETICARET.Entities
 
         public List<ProductCategory> ProductCategories { get; set; }
 
-        public Product()
+        public ProductModel()
         {
             Images = new List<Image>();
         }

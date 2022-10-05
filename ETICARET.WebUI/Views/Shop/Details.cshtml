@@ -5,7 +5,20 @@
 
 <div class="row">
     <div class="col-md-3">
-        <img src="~/img/@Model.Product.ImageUrl" alt="@Model.Product.Name" class="img-fluid" />
+        <div class="row">
+            <div class="col-md-12">
+                <img src="~/img/@Model.Product.Images[0].ImageUrl" alt="@Model.Product.Name" class="img-fluid" id="imageBox" />
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var item in Model.Product.Images)
+            {
+                <div class="col-md-3">
+                    <img src="~/img/@item.ImageUrl" alt="@Model.Product.Name" class="img-fluid" onclick="myFunction(this)" />
+                </div>
+            }
+
+        </div>
     </div>
 
     <div class="col-md-9">
@@ -15,7 +28,7 @@
         {
             <a href="#" class="btn btn-link p-0 mb-3">@category.Name</a>
         }
-        
+
         <div class="mb-3">
             <h4 class="text-primary mb-3">
                 @Model.Product.Price TL
@@ -28,7 +41,14 @@
 <div class="row">
     <div class="col-md-12">
         <p class="p-3">
-           @Html.Raw(Model.Product.Description)
+            @Html.Raw(Model.Product.Description)
         </p>
     </div>
 </div>
+
+<script>
+ function myFunction(smallImg){
+     var fullImg = document.getElementById("imageBox")
+     fullImg.src=smallImg.src
+ }
+</script>

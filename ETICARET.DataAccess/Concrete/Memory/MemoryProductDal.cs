@@ -21,17 +21,17 @@ namespace ETICARET.DataAccess.Concrete.Memory
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Product> GetAll(Expression<Func<Product, bool>> filter = null)
-        {
-            var products = new List<Product>()
-           {
-               new Product(){ Id=1,Name="Samsung Note9", Price=15000, ImageUrl="1.jpg"},
-               new Product(){ Id=2,Name="Samsung Note10", Price=16000, ImageUrl="2.jpg"},
-               new Product(){ Id=3,Name="Samsung Note11", Price=17000, ImageUrl="3.jpg"}
-           };
+        //public IEnumerable<Product> GetAll(Expression<Func<Product, bool>> filter = null)
+        //{
+        //    var products = new List<Product>()
+        //   {
+        //       //new Product(){ Id=1,Name="Samsung Note9", Price=15000, ImageUrl="1.jpg"},
+        //       //new Product(){ Id=2,Name="Samsung Note10", Price=16000, ImageUrl="2.jpg"},
+        //       //new Product(){ Id=3,Name="Samsung Note11", Price=17000, ImageUrl="3.jpg"}
+        //   };
 
-            return products;
-        }
+        //    return products;
+        //}
 
         public Product GetById(int id)
         {

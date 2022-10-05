@@ -12,6 +12,17 @@ namespace ETICARET.DataAccess.Concrete.EfCore
 {
     public class EfCoreProductDal : EfCoreGenericRepository<Product, DataContext>, IProductDal
     {
+
+
+        public override List<Product> GetAll(Expression<Func<Product, bool>> filter)
+        {
+            using (var context = new DataContext())
+            {
+                return filter == null
+                         ? context.Products.Include("Images").ToList()
+                         : context.Products.Include("Images").Where(filter).ToList();
+            }
+        }
         public int GetCountByCategory(string category)
         {
             using (var context = new DataContext())
@@ -35,8 +46,9 @@ namespace ETICARET.DataAccess.Concrete.EfCore
         {
             using(var context = new DataContext())
             {
-                return context.Products
+                return context.Products                        
                         .Where(i => i.Id == id)
+                        .Include("Images")
                         .Include(i => i.ProductCategories)
                         .ThenInclude(i => i.Category)
                         .FirstOrDefault();
@@ -47,11 +59,11 @@ namespace ETICARET.DataAccess.Concrete.EfCore
         {
             using (var context = new DataContext())
             {
-                var products = context.Products.AsQueryable();
+                var products = context.Products.Include("Images").AsQueryable();
 
                 if (!string.IsNullOrEmpty(category))
                 {
-                    products = products
+                    products = products                                
                                 .Include(i => i.ProductCategories)
                                 .ThenInclude(i => i.Category)
                                 .Where(i => i.ProductCategories.Any(a => a.Category.Name.ToLower() == category.ToLower()));

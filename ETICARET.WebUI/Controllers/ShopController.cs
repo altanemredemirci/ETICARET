@@ -20,18 +20,20 @@ namespace ETICARET.WebUI.Controllers
         {
             const int pageSize = 3;
 
-            return View(new ProductListModel()
+
+            var products = new ProductListModel()
             {
                 PageInfo = new PageInfo()
                 {
-                    TotalItems=_productService.GetCountByCategory(category),
-                    ItemsPerPage=pageSize,
-                    CurrentCategory=category,
-                    CurrentPage=page
+                    TotalItems = _productService.GetCountByCategory(category),
+                    ItemsPerPage = pageSize,
+                    CurrentCategory = category,
+                    CurrentPage = page
                 },
 
-                Products=_productService.GetProductsByCategory(category, page,pageSize)
-            });
+                Products = _productService.GetProductsByCategory(category, page, pageSize)
+            };
+            return View(products);
         }
 
         public IActionResult Details(int? id)
