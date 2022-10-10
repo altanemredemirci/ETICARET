@@ -7,6 +7,7 @@
 <h1>EditProduct</h1>
 <hr />
 <form asp-controller="Admin" asp-action="EditProduct" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="Id" value="@Model.Id"/>
     <div class="row">
         <div class="col-md-8">
             <div class="mb-3 col-md-6 offset-md-3">
@@ -15,14 +16,14 @@
                 <span asp-validation-for="Name"></span>
             </div>
 
-            @for (int i = 0; i < Model.Images.Count; i++)
+            @foreach(var Image in Model.Images)
             {
                    <div class="mb-3 col-md-6 offset-md-3">
-                    <label asp-for="Images[i].ImageUrl" class="form-label"></label>
-                    <input type="hidden" name="ImageUrl" value="Images[i].ImageUrl" />
-                    <img src="~/img/Images[i].ImageUrl" width="80" id="imgPreview" />
-                    <input type="file" name="file" value="" id="fileImage" />
-                    <span asp-validation-for="Images[i].ImageUrl"></span>
+                    <label asp-for="@Image.ImageUrl" class="form-label"></label>
+                    <input type="hidden" name="ImageUrl" value="@Image.ImageUrl" />
+                    <img src="~/img/@Image.ImageUrl" width="80" id="imgPreview" />
+                    <input type="file" name="files" value="" />
+                   @* <span asp-validation-for="Image.ImageUrl"></span>*@
                 </div>
             }
           

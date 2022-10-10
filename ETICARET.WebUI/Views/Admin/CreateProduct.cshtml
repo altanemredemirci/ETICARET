@@ -4,18 +4,9 @@
 }
 
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#fileImage").change(function (e) {
-            $("#imgPreview").show();
-            $("#imgPreview").attr('src', URL.createObjectURL(e.target.files[0]))
-        })
-    })
-</script>
-
 <h1>CreateProduct</h1>
 <hr />
-<form asp-controller="Admin" asp-action="CreateProduct" method="post">
+<form asp-controller="Admin" asp-action="CreateProduct" method="post" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-8">
             <div class="mb-3 col-md-6 offset-md-3">
@@ -24,13 +15,13 @@
                 <span asp-validation-for="Name"></span>
             </div>
 
-          @*  <div class="mb-3 col-md-6 offset-md-3">
+            <div class="mb-3 col-md-6 offset-md-3">
                 <label  class="form-label">Image</label>
-                <input type="hidden" name="Images" value="@Model.Images" />
-                <img src="~/img/@Model.ImageUrl" width="80" id="imgPreview" />
-                <input type="file" name="file" value="" id="fileImage" />
-              <span asp-validation-for="ImageUrl"></span>
-            </div>*@
+                @*<input type="hidden" name="Images" value="@Model.Images" />*@
+                @*<img src="~/img/@Model.ImageUrl" width="80" id="imgPreview" />*@
+                <input type="file" name="files" value="" multiple/>
+              @*<span asp-validation-for="ImageUrl"></span>*@
+            </div>
             <div class="mb-3 col-md-6 offset-md-3">
                 <label asp-for="Description" class="form-label"></label>
                 <textarea id="editor" class="form-control" asp-for="Description" placeholder="Description"></textarea>

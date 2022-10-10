@@ -22,7 +22,7 @@ namespace ETICARET.DataAccess.Concrete.EfCore
             }
         }
 
-        public void Delete(T entity)
+        public virtual void Delete(T entity)
         {
             using (var context = new TContext())
             {
@@ -60,12 +60,12 @@ namespace ETICARET.DataAccess.Concrete.EfCore
             }
         }
 
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             using (var context = new TContext())
             {
                 context.Entry(entity).State = EntityState.Modified;
-                context.SaveChanges();
+                int sonuc = context.SaveChanges();
             }
         }
     }

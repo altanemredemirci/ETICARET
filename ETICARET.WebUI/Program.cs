@@ -61,6 +61,21 @@ name: "adminProducts",
 pattern: "admin/products/{id?}",
 defaults: new { controller = "Admin", action = "EditProduct" }
 );
+
+    endpoints.MapControllerRoute
+(
+  name: "adminCategories",
+  pattern: "admin/categories",
+  defaults: new { controller = "Admin", action = "CategoryList" }
+);
+
+    endpoints.MapControllerRoute
+(
+  name: "adminCategories",
+  pattern: "admin/categories/{id?}",
+  defaults: new { controller = "Admin", action = "EditCategory" }
+);
+
 });
 
 app.Run();

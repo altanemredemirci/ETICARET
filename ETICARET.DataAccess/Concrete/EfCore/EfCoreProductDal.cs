@@ -12,7 +12,15 @@ namespace ETICARET.DataAccess.Concrete.EfCore
 {
     public class EfCoreProductDal : EfCoreGenericRepository<Product, DataContext>, IProductDal
     {
-
+        public override void Delete(Product entity)
+        {
+            using (var context = new DataContext())
+            {
+                context.Images.RemoveRange(entity.Images);
+                context.Products.Remove(entity);
+                context.SaveChanges();
+            }
+        }
 
         public override List<Product> GetAll(Expression<Func<Product, bool>> filter)
         {
