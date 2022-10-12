@@ -27,6 +27,11 @@ namespace ETICARET.Business.Concrete
             _categoryDal.Delete(entity);
         }
 
+        public void DeleteFromCatefory(int categoryId, int productId)
+        {
+            _categoryDal.DeleteFromCatefory(categoryId, productId);
+        }
+
         public List<Category> GetAll()
         {
             return _categoryDal.GetAll();

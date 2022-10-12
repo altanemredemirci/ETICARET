@@ -14,7 +14,7 @@ namespace ETICARET.Business.Abstract
         List<Product> GetProductsByCategory(string category, int page, int pageSize);
         Product GetProductDetails(int id);
         void Create(Product entity);
-        void Update(Product entity);
+        void Update(Product entity, int[] categoryIds);
         void Delete(Product entity);
         int GetCountByCategory(string category);
     }

@@ -13,5 +13,7 @@ namespace ETICARET.DataAccess.Abstract
         int GetCountByCategory(string category);
         Product GetProductDetails(int id);
         List<Product> GetProductsByCategory(string category, int page, int pageSize);
+        void Update(Product entity, int[] categoryIds);
+        
     }
 }

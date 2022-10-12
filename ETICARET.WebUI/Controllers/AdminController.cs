@@ -33,34 +33,38 @@ namespace ETICARET.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct(ProductModel model,List<IFormFile> files)
         {
-            var entity = new Product()
+            if (ModelState.IsValid)
             {
-                Name=model.Name,
-                Description=model.Description,
-                Price=model.Price                
-            };
-
-            if (files != null)
-            {
-                foreach (var file in files)
+                var entity = new Product()
                 {
-                    Image image = new Image();
-                    image.ImageUrl = file.FileName;
+                    Name = model.Name,
+                    Description = model.Description,
+                    Price = model.Price
+                };
 
-                    entity.Images.Add(image);
-
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img", file.FileName);
-
-                    using(var stream = new FileStream(path, FileMode.Create))
+                if (files != null)
+                {
+                    foreach (var file in files)
                     {
-                        await file.CopyToAsync(stream);
+                        Image image = new Image();
+                        image.ImageUrl = file.FileName;
+
+                        entity.Images.Add(image);
+
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img", file.FileName);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
                     }
-
                 }
-            }
 
-            _productService.Create(entity);
-            return Redirect("ProductList");
+                _productService.Create(entity);
+                return Redirect("/admin/products");
+            }
+            return View(model);
         }
 
         public IActionResult EditProduct(int id)
@@ -81,13 +85,16 @@ namespace ETICARET.WebUI.Controllers
                 Name = entity.Name,
                 Description = entity.Description,
                 Price = entity.Price,
-                Images = entity.Images
+                Images = entity.Images,
+                SelectedCategories=entity.ProductCategories.Select(i=> i.Category).ToList()
             };
+
+            ViewBag.Categories = _categoryService.GetAll();
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProduct(ProductModel model, List<IFormFile> files)
+        public async Task<IActionResult> EditProduct(ProductModel model, List<IFormFile> files, int[] categoryIds)
         {
 
             var entity = _productService.GetById(model.Id);
@@ -99,8 +106,7 @@ namespace ETICARET.WebUI.Controllers
 
             entity.Name = model.Name;
             entity.Description = model.Description;
-            entity.Price = model.Price;
-            //entity.Images.Clear();
+            entity.Price = model.Price; 
 
             if (files != null)
             {
@@ -120,7 +126,7 @@ namespace ETICARET.WebUI.Controllers
 
                 }
 
-                _productService.Update(entity);
+                _productService.Update(entity,categoryIds);
                 return RedirectToAction("ProductList");
             }
 
@@ -195,6 +201,16 @@ namespace ETICARET.WebUI.Controllers
 
             _categoryService.Delete(entity);
             return RedirectToAction("CategoryList");
+        }
+
+
+        [HttpPost]
+        public IActionResult DeleteFromCategory(int categoryId, int productId)
+        {
+            _categoryService.DeleteFromCatefory(categoryId,productId);
+
+           
+            return Redirect("/admin/categories/" + categoryId);
         }
     }
 }

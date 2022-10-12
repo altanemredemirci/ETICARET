@@ -19,6 +19,7 @@ namespace ETICARET.Entities
         public Product()
         {
             Images = new List<Image>();
+            ProductCategories = new List<ProductCategory>();
         }
     }
 }

@@ -16,11 +16,20 @@ namespace ETICARET.DataAccess.Concrete.EfCore
         {
             using (var context= new DataContext())
             {
-                context.Categories.Remove(entity);
-                context.ProductCategories.RemoveRange(entity.ProductCategories);
+                context.Categories.Remove(entity);                
                 context.SaveChanges();
             }
                 
+        }
+
+        public void DeleteFromCatefory(int categoryId, int productId)
+        {
+            using (var context = new DataContext())
+            {
+                var cmd = @"delete from ProductCategory where ProductId=@p0 and CategoryId=@p1";
+
+                context.Database.ExecuteSqlRaw(cmd, productId, categoryId);
+            }
         }
 
         public Category GetByIdWithProducts(int id)
@@ -31,6 +40,7 @@ namespace ETICARET.DataAccess.Concrete.EfCore
                         .Where(i => i.Id == id)
                         .Include(i => i.ProductCategories)
                         .ThenInclude(i => i.Product)
+                        .ThenInclude(i=> i.Images)
                         .FirstOrDefault();
             }
         }

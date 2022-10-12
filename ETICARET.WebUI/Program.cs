@@ -3,17 +3,61 @@ using ETICARET.Business.Concrete;
 using ETICARET.DataAccess.Abstract;
 using ETICARET.DataAccess.Concrete.EfCore;
 using ETICARET.DataAccess.Concrete.Memory;
+using ETICARET.WebUI.Identity;
 using ETICARET.WebUI.Middlewares;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    //password
+
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequiredLength = 6;
+
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.AllowedForNewUsers = true;
+
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+
+
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/account/accessdenied";
+    options.LoginPath = "/Account/login";
+    options.LogoutPath = "/Account/logout";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    options.SlidingExpiration = true;
+    options.Cookie = new CookieBuilder()
+    {
+        HttpOnly = true,
+        Name = "ETICARET.Security.Cookie"
+    };
+});
+
+
+
 
 builder.Services.AddScoped<IProductDal, EfCoreProductDal>();
 builder.Services.AddScoped<IProductService, ProductManager>();
 builder.Services.AddScoped<ICategoryDal, EfCoreCategoryDal>();
 builder.Services.AddScoped<ICategoryService, CategoryManager>();
+
 
 
 //builder.Services.AddControllersWithViews(); MVC import
@@ -32,6 +76,7 @@ if (!app.Environment.IsDevelopment())
 SeedDatabase.Seed();
 app.UseStaticFiles();
 app.CustomStaticFiles(); //middleware:Bootstrap kütüphanesini npm aracýlýðýyla static dosya olarak projeye daihl edeceðiz.
+app.UseAuthentication();
 app.UseRouting();
 
 app.UseAuthorization();

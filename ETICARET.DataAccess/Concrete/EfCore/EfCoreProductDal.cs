@@ -12,6 +12,36 @@ namespace ETICARET.DataAccess.Concrete.EfCore
 {
     public class EfCoreProductDal : EfCoreGenericRepository<Product, DataContext>, IProductDal
     {
+        public void Update(Product entity, int[] categoryIds)
+        {
+            using (var context = new DataContext())
+            {
+
+                var product = context.Products.Include(i => i.ProductCategories).FirstOrDefault(i => i.Id == entity.Id);
+
+                if (product != null)
+                {
+                    context.Images.RemoveRange(context.Images.Where(i => i.ProductId == entity.Id).ToList());
+
+                    product.Price = entity.Price;
+                    product.Name = entity.Name;
+                    product.Description = entity.Description;
+                    product.ProductCategories = categoryIds.Select(catid => new ProductCategory()
+                    {
+                        ProductId = entity.Id,
+                        CategoryId = catid
+                    }).ToList();
+
+
+                    product.Images = entity.Images;
+
+                   
+                }
+
+                context.SaveChanges();
+            }
+        }
+
         public override void Delete(Product entity)
         {
             using (var context = new DataContext())
@@ -53,13 +83,13 @@ namespace ETICARET.DataAccess.Concrete.EfCore
         public Product GetProductDetails(int id)
         {
             using(var context = new DataContext())
-            {
-                return context.Products                        
+            {              
+                return context.Products
                         .Where(i => i.Id == id)
                         .Include("Images")
                         .Include(i => i.ProductCategories)
                         .ThenInclude(i => i.Category)
-                        .FirstOrDefault();
+                        .FirstOrDefault(); ;
             }
         }
 

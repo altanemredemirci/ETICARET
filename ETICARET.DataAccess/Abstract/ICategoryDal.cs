@@ -10,6 +10,7 @@ namespace ETICARET.DataAccess.Abstract
 {
     public interface ICategoryDal : IRepository<Category>
     {
+        void DeleteFromCatefory(int categoryId, int productId);
         Category GetByIdWithProducts(int id);
     }
 }
