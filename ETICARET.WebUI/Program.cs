@@ -15,6 +15,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     //password
@@ -30,7 +34,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Lockout.AllowedForNewUsers = true;
 
     options.User.RequireUniqueEmail = true;
-    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedEmail = true;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 
 
@@ -46,7 +50,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie = new CookieBuilder()
     {
         HttpOnly = true,
-        Name = "ETICARET.Security.Cookie"
+        Name = "ETICARET.Security.Cookie",
+        SameSite = SameSiteMode.Strict
     };
 });
 
@@ -120,6 +125,7 @@ defaults: new { controller = "Admin", action = "EditProduct" }
   pattern: "admin/categories/{id?}",
   defaults: new { controller = "Admin", action = "EditCategory" }
 );
+
 
 });
 

@@ -1,10 +1,13 @@
 ﻿using ETICARET.Business.Abstract;
 using ETICARET.Entities;
 using ETICARET.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ETICARET.WebUI.Controllers
 {
+
+    [Authorize]
     public class AdminController : Controller
     {
         IProductService _productService;
