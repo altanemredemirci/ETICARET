@@ -19,6 +19,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
     .AddDefaultTokenProviders();
 
+//SeedIdentity parametres 
+var userManager = builder.Services.BuildServiceProvider().GetService<UserManager<ApplicationUser>>();
+var roleManager = builder.Services.BuildServiceProvider().GetService<RoleManager<IdentityRole>>();
+
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     //password
@@ -128,5 +133,8 @@ defaults: new { controller = "Admin", action = "EditProduct" }
 
 
 });
+
+
+SeedIdentity.Seed(userManager, roleManager, app.Configuration).Wait();
 
 app.Run();

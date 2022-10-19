@@ -1,4 +1,5 @@
 ﻿using ETICARET.WebUI.EmailServices;
+using ETICARET.WebUI.Extensions;
 using ETICARET.WebUI.Identity;
 using ETICARET.WebUI.Models;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -62,6 +63,12 @@ namespace ETICARET.WebUI.Controllers
 
                 MailHelper.SendEmail(body, model.Email, "ETICARET HESAP AKTİFLEŞTİRME");
 
+                TempData.Put("message", new ResultMessage()
+                {
+                    Title = "Hesap Onayı",
+                    Message = "Email adresinize gelen link ile hesabınızı onaylanyınız.",
+                    Css = "warning"
+                });
 
                 return RedirectToAction("Login", "Account");
             }
@@ -116,6 +123,12 @@ namespace ETICARET.WebUI.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
+            TempData.Put("message", new ResultMessage()
+            {
+                Title = "Oturum Kapatıldı",
+                Message = "Hesabınız güvenli bir şekilde sonlandırıldı.",
+                Css = "warning"
+            });
             return Redirect("~/");
         }
 
@@ -123,8 +136,13 @@ namespace ETICARET.WebUI.Controllers
         {
            if(userId == null || token == null)
             {
-                TempData["message"] = "Geçersiz Token";
-                return View();
+                TempData.Put("message", new ResultMessage()
+                {
+                    Title = "Geçersiz Token",
+                    Message = "Hesap onayı için bilgileriniz yanlış",
+                    Css = "danger"
+                });
+                return Redirect("~/");
             }
 
             var user = await _userManager.FindByIdAsync(userId);
@@ -134,13 +152,104 @@ namespace ETICARET.WebUI.Controllers
                 var result = await _userManager.ConfirmEmailAsync(user, token);
                 if (result.Succeeded)
                 {
-                    TempData["message"] = "Hesabınız Onaylandı.";
-                    return View();
+                    TempData.Put("message", new ResultMessage()
+                    {
+                        Title = "Hesap Onayı",
+                        Message = "Hesabınız onaylanmıştır.",
+                        Css = "success"
+                    });
+                    return RedirectToAction("Login","Account");
                 }
             }
 
-            TempData["message"] = "Hesabınız Onaylanmadı.";
+            TempData.Put("message", new ResultMessage()
+            {
+                Title = "Hesap Onayı",
+                Message = "Hesabınız onaylanmadı.",
+                Css = "danger"
+            });
+            return Redirect("~/");
+        }
+
+        public IActionResult ForgotPassword()
+        {
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string Email)
+        {
+            if (string.IsNullOrEmpty(Email))
+            {
+                TempData.Put("message", new ResultMessage()
+                {
+                    Title = "Forgot Password",
+                    Message = "Bilgileriniz Hatalı",
+                    Css = "danger"
+                });
+                return View();
+            }
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user == null)
+            {
+                TempData.Put("message", new ResultMessage()
+                {
+                    Title = "Forgot Password",
+                    Message = "Email adresi ile bir kullanıcı bulunamadı.",
+                    Css = "danger"
+                });
+                return View();
+            }
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var callbackUrl = Url.Action("ResetPassword", "Account", new
+            {
+                token = code
+            });
+
+            string siteUrl = "http://localhost:5174";
+            string body = $"Parolanızı yenilemek için linke <a href='{siteUrl}{callbackUrl}'> tıklayınız.</a>";
+
+            MailHelper.SendEmail(body, Email, "ETICARET Şifre Resetleme");
+
+            return RedirectToAction("Login");
+        }
+
+        public IActionResult ResetPassword(string token)
+        {
+            if (token == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var model = new ResetPasswordModel() { Token = token };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            return View(model);
+        }
+
     }
 }

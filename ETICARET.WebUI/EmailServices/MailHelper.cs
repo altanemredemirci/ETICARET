@@ -17,7 +17,7 @@ namespace ETICARET.WebUI.EmailServices
             try
             {
                 var message = new MailMessage();
-                message.From = new MailAddress("test_altan_emre_1989@gmail.com");
+                message.From = new MailAddress("test_altan_emre_1989@hotmail.com");
 
                 to.ForEach(x =>
                 {

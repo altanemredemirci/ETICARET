@@ -1,22 +1,28 @@
 ﻿using ETICARET.Business.Abstract;
 using ETICARET.Entities;
+using ETICARET.WebUI.Identity;
 using ETICARET.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ETICARET.WebUI.Controllers
 {
 
-    [Authorize]
+    [Authorize(Roles ="admin")]
     public class AdminController : Controller
     {
         IProductService _productService;
         ICategoryService _categoryService;
+        private UserManager<ApplicationUser> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
 
-        public AdminController(IProductService productService,ICategoryService categoryService)
+        public AdminController(IProductService productService,ICategoryService categoryService, UserManager<ApplicationUser> userManager,RoleManager<IdentityRole> roleManager)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [Route("admin/products")]
@@ -214,6 +220,96 @@ namespace ETICARET.WebUI.Controllers
 
            
             return Redirect("/admin/categories/" + categoryId);
+        }
+    
+        public async Task<IActionResult> UserList()
+        {
+            List<ApplicationUser> userList = _userManager.Users.ToList();
+            List<AdminUserModel> model = new List<AdminUserModel>();
+
+            foreach (ApplicationUser item in userList)
+            {
+                AdminUserModel user = new AdminUserModel();
+
+                user.FullName = item.FullName;
+                user.Username = item.UserName;
+                user.EmailConfirmed = item.EmailConfirmed;
+                user.Email = item.Email;
+                user.IsAdmin = await _userManager.IsInRoleAsync(item, "admin");
+
+                model.Add(user);
+            }
+            return View(model);            
+        }
+
+        public async Task<IActionResult> UserEdit(string Email)
+        {
+            ApplicationUser entity = await _userManager.FindByEmailAsync(Email);
+
+            if (entity==null)
+            {
+                ModelState.AddModelError("", "Bu kullanıcı ile daha önce hesap oluşturulmamıştır.");
+
+                return View(entity);
+            }
+
+            AdminUserModel user = new AdminUserModel();
+
+            user.FullName = entity.FullName;
+            user.Username = entity.UserName;
+            user.EmailConfirmed = entity.EmailConfirmed;
+            user.Email = entity.Email;
+            user.IsAdmin = await _userManager.IsInRoleAsync(entity, "admin");
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserEdit(AdminUserModel model)
+        {
+            ApplicationUser entity = await _userManager.FindByEmailAsync(model.Email);
+
+            if (entity == null)
+            {
+                ModelState.AddModelError("", "Bu kullanıcı ile daha önce hesap oluşturulmamıştır.");
+
+                return View(entity);
+            }
+
+
+            entity.FullName = model.FullName;
+            entity.EmailConfirmed = entity.EmailConfirmed;
+            entity.Email = model.Email;
+            if (model.IsAdmin)
+            {
+                await _userManager.AddToRoleAsync(entity, "admin");
+            }
+            else
+            {
+                await _userManager.RemoveFromRoleAsync(entity, "admin");
+            }
+
+            await _userManager.UpdateAsync(entity);
+
+            return RedirectToAction("userlist", "Admin");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UserDelete(string Email)
+        {
+            ApplicationUser entity = await _userManager.FindByEmailAsync(Email);
+
+            if (entity != null)
+            {
+                await _userManager.DeleteAsync(entity);
+
+                return RedirectToAction("userlist", "Admin");
+            }
+
+            ModelState.AddModelError("", "Silme işlemi başarısız!!");
+
+            return View(entity);
         }
     }
 }
